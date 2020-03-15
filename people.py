@@ -5,18 +5,27 @@ from variables import displacement, p_get_infected, space, lifetime
 
 class Person:
     def __init__(self, space):
-        self.x = np.random.randint(space)
-        self.y = np.random.randint(space)
         self.infected = 0
         self.infected_time = 0
 
+        self.set_position(space)
+
+    def set_position(self, space):
+        self.x = np.random.randint(space)
+        self.y = np.random.randint(space)
+
+    def get_position(self):
+        return self.x, self.y
+
     def move(self, world):
         self.motion()
+
         #If the area is infected the person becomes infected
         if world.x[self.x, self.y] != 0:
             if np.random.random() < p_get_infected:
                 if self.infected == 0:
                     self.infected = 1
+
         #If the person is infected the area becomes infected or it's counter start over
         #The living time of the infected increases
         if self.infected != 0:
@@ -48,7 +57,7 @@ class People:
         self.people[0].infected_time += 1
 
         x, y = self.GetCoordinate(i)
-        world.x[x, y] = 1
+        # world.x[x, y] = 1
 
     def move_people(self, world):
         for i in self.people:

@@ -2,8 +2,10 @@ import numpy as np
 
 class World:
     #Infected area represented by 1, normal area represented by 0
-    def __init__(self,space):
-        self.x = np.zeros((space,space)).astype('int')
+    def __init__(self, space):
+        # self.x = np.zeros((space, space)).astype('int')
+
+        self.x = x = [[list() for i in range(space)] for j in range(space)]
 
     def check_areas(self):
         notzeros = np.where(self.x != 0)
