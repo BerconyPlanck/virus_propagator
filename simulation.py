@@ -1,11 +1,6 @@
-import os
 import numpy as np
 
-from people import People
-from world import World
-
-from animate import generate_movie
-from variables import space, npeople, time, p_get_infected, p_get_cured
+from variables import space, p_get_infected, p_get_cured
 
 
 class Simulation:
@@ -24,13 +19,13 @@ class Simulation:
         for person in self.population.people:
             person.set_position(space)
 
-    def move_people(self):
+    def move_people(self, i):
         for person in self.population.people:
 
             if person in self.physical_world.x[person.get_position()[0]][person.get_position()[1]]:
                 self.physical_world.x[person.get_position()[0]][person.get_position()[1]].remove(person)
 
-            person.motion()
+            person.motion(i)
 
             self.physical_world.x[person.get_position()[0]][person.get_position()[1]].append(person)
 
@@ -51,7 +46,6 @@ class Simulation:
             if person.is_infected():
                 if np.random.random() < p_get_cured:
                     person.get_cured()
-
 
     def write_populated_world(self, filename):
         with open(filename, 'w') as output:
@@ -80,38 +74,3 @@ class Simulation:
         self.healthy.append(number_of_people_healthy)
         self.infected.append(number_of_people_infected)
         self.cured.append(number_of_people_cured)
-
-
-def main():
-
-    world = World(space)
-    population = People(npeople, world)
-
-    simulation = Simulation(population, world)
-
-    filename_world = 'worlds/world{0:04d}'
-    filename_status = 'worlds/status'
-    #Create worlds directory if it doesn't exist
-    if not os.path.isdir('worlds'):
-        os.mkdir('worlds')
-
-    time_range = range(time)
-    for i in time_range:
-        print(f'Computing time step: {i}')
-        simulation.move_people()
-
-        simulation.infect_people()
-        simulation.recover_people()
-
-        simulation.write_populated_world(filename_world.format(i))
-
-        simulation.count_cases()
-
-        simulation.write_status(filename_status)
-
-    print('Generating movie. This takes quite some time.')
-    generate_movie('Movie', time)
-
-
-if __name__ == '__main__':
-    main()

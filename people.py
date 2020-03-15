@@ -1,6 +1,5 @@
 import numpy as np
-
-from variables import displacement, p_get_infected, space, lifetime
+from variables import displacement, min_recovery_time, min_recovery_time, space, lifetime
 
 
 class Person:
@@ -8,7 +7,8 @@ class Person:
         self.infected = 0
         self.cured = 0
 
-        self.infected_time = 0
+        self.time = 0
+        self.personal_recovery_time = np.random.randint(low=min_recovery_time, high=min_recovery_time+1)
 
         self.set_position(space)
 
@@ -19,16 +19,13 @@ class Person:
     def get_position(self):
         return self.x, self.y
 
-    def move(self, world):
-        self.motion()
+        # #If the person is infected the area becomes infected or it's counter start over
+        # #The living time of the infected increases
+        # if self.infected != 0:
+        #     world.x[self.x,self.y] = 1
+        #     self.infected_time += 1
 
-        #If the person is infected the area becomes infected or it's counter start over
-        #The living time of the infected increases
-        if self.infected != 0:
-            world.x[self.x,self.y] = 1
-            self.infected_time += 1
-
-    def motion(self):
+    def motion(self, i):
         dx, dy = int((np.random.randint(displacement+1))-(displacement/2)), \
                  int((np.random.randint(displacement+1))-(displacement/2))
 
@@ -41,19 +38,23 @@ class Person:
         if self.y >= space or self.y < 0:
             self.y = space - np.abs(self.y)
 
+        self.time = i
+
     def is_infected(self):
         return bool(self.infected)
 
     def get_infected(self):
         if self.cured == 0:
             self.infected = 1
+            self.contact_time = self.time
 
     def is_cured(self):
         return bool(self.cured)
 
     def get_cured(self):
-        self.infected = 0
-        self.cured = 1
+        if (self.time - self.contact_time) > self.personal_recovery_time:
+            self.infected = 0
+            self.cured = 1
 
     def get_status(self):
         if self.infected == 1:
@@ -73,12 +74,5 @@ class People:
             self.people.append(Person(space))
 
         self.people[0].infected = 1
-        self.people[0].infected_time += 1
+        self.people[0].contact_time = 0
 
-    def move_people(self, world):
-        for i in self.people:
-            i.move(world)
-        self.people = [i for i in self.people if i.infected_time < lifetime]
-
-    def GetInfected(self):
-        return len([i for i in self.people if i.infected > 0])
