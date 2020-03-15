@@ -6,6 +6,8 @@ from variables import displacement, p_get_infected, space, lifetime
 class Person:
     def __init__(self, space):
         self.infected = 0
+        self.cured = 0
+
         self.infected_time = 0
 
         self.set_position(space)
@@ -19,12 +21,6 @@ class Person:
 
     def move(self, world):
         self.motion()
-
-        #If the area is infected the person becomes infected
-        if world.x[self.x, self.y] != 0:
-            if np.random.random() < p_get_infected:
-                if self.infected == 0:
-                    self.infected = 1
 
         #If the person is infected the area becomes infected or it's counter start over
         #The living time of the infected increases
@@ -45,6 +41,29 @@ class Person:
         if self.y >= space or self.y < 0:
             self.y = space - np.abs(self.y)
 
+    def is_infected(self):
+        return bool(self.infected)
+
+    def get_infected(self):
+        if self.cured == 0:
+            self.infected = 1
+
+    def is_cured(self):
+        return bool(self.cured)
+
+    def get_cured(self):
+        self.infected = 0
+        self.cured = 1
+
+    def get_status(self):
+        if self.infected == 1:
+            status = 1
+        elif self.cured == 1:
+            status = 2
+        else:
+            status = 0
+        return status
+
 
 class People:
     def __init__(self, npeople, world):
@@ -56,9 +75,6 @@ class People:
         self.people[0].infected = 1
         self.people[0].infected_time += 1
 
-        x, y = self.GetCoordinate(i)
-        # world.x[x, y] = 1
-
     def move_people(self, world):
         for i in self.people:
             i.move(world)
@@ -66,13 +82,3 @@ class People:
 
     def GetInfected(self):
         return len([i for i in self.people if i.infected > 0])
-
-    def GetCoordinate(self, i):
-        return self.people[i].x, self.people[i].y
-
-    def writePeople(self, filename):
-        output = open(filename, 'w')
-        for i in range(len(self.people)):
-            x, y = self.GetCoordinate(i)
-            output.write('{0:d}\t{1:d}\t{2:d}\n'.format(x, y, self.people[i].infected))
-        output.close()

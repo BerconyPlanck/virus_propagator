@@ -5,7 +5,7 @@ class World:
     def __init__(self, space):
         # self.x = np.zeros((space, space)).astype('int')
 
-        self.x = x = [[list() for i in range(space)] for j in range(space)]
+        self.x = [[list() for i in range(space)] for j in range(space)]
 
     def check_areas(self):
         notzeros = np.where(self.x != 0)
