@@ -67,12 +67,19 @@ class Person:
 
 
 class People:
-    def __init__(self, npeople, world):
+    def __init__(self, npeople):
         self.people = []
+        self.npeople = npeople
 
-        for i in range(npeople):
+    def initialize_population(self):
+        self._create_population()
+        self._initialize_infected_people()
+
+    def _create_population(self):
+        for i in range(self.npeople):
             self.people.append(Person(space))
 
+    def _initialize_infected_people(self):
         self.people[0].infected = 1
         self.people[0].contact_time = 0
 

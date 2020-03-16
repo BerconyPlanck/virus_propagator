@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from variables import space, p_get_infected, p_get_cured
 
@@ -9,25 +10,26 @@ class Simulation:
         self.population = population
         self.physical_world = physical_world
 
-        self._place_population_in_the_physical_world()
-
         self.healthy = list()
         self.infected = list()
         self.cured = list()
+
+        self._place_population_in_the_physical_world()
+
+        self.filename_world = None
+        self.filename_status = None
 
     def _place_population_in_the_physical_world(self):
         for person in self.population.people:
             person.set_position(space)
 
-    def move_people(self, i):
-        for person in self.population.people:
+    def move_person(self, person, i):
+        if person in self.physical_world.x[person.get_position()[0]][person.get_position()[1]]:
+            self.physical_world.x[person.get_position()[0]][person.get_position()[1]].remove(person)
 
-            if person in self.physical_world.x[person.get_position()[0]][person.get_position()[1]]:
-                self.physical_world.x[person.get_position()[0]][person.get_position()[1]].remove(person)
+        person.motion(i)
 
-            person.motion(i)
-
-            self.physical_world.x[person.get_position()[0]][person.get_position()[1]].append(person)
+        self.physical_world.x[person.get_position()[0]][person.get_position()[1]].append(person)
 
     def infect_people(self):
         for row in self.physical_world.x:
@@ -41,20 +43,32 @@ class Simulation:
                                 if np.random.random() < p_get_infected:
                                     person.get_infected()
 
-    def recover_people(self):
-        for person in self.population.people:
-            if person.is_infected():
-                if np.random.random() < p_get_cured:
-                    person.get_cured()
+    def recover_people(self, person):
+        if person.is_infected():
+            if np.random.random() < p_get_cured:
+                person.get_cured()
 
-    def write_populated_world(self, filename):
-        with open(filename, 'w') as output:
+    def save_data(self, i):
+        self.write_populated_world(i)
+        self.count_cases()
+        self.write_status()
+
+    def create_world_directory(self, filename_world='worlds/world{0:04d}', filename_status='worlds/status'):
+        self.filename_world = filename_world
+        self.filename_status = filename_status
+
+        # Create worlds directory if it doesn't exist
+        if not os.path.isdir('worlds'):
+            os.mkdir('worlds')
+
+    def write_populated_world(self, i):
+        with open(self.filename_world.format(i), 'w') as output:
             for person in self.population.people:
                 x, y = person.get_position()
                 output.write('{0:d}\t{1:d}\t{2:d}\n'.format(x, y, person.get_status()))
 
-    def write_status(self, filename):
-        with open(filename, 'w') as output:
+    def write_status(self):
+        with open(self.filename_status, 'w') as output:
             for i in range(len(self.healthy)):
                 output.write('{0:d}\t{1:d}\t{2:d}\t{3:d}\n'.format(i, self.healthy[i], self.infected[i], self.cured[i]))
 
