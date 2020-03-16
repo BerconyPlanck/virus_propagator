@@ -2,7 +2,7 @@ from celluloid import Camera
 import matplotlib.pyplot as plt
 import numpy as np
 
-from variables import space
+from parameters.user_parameters import space
 
 
 def animate(i, axs, camera):
@@ -18,6 +18,7 @@ def animate(i, axs, camera):
     axs[1].plot(data[:, 0][0: i], data[:, 1][0: i], color="b")
     axs[1].plot(data[:, 0][0: i], data[:, 2][0: i], color="y")
     axs[1].plot(data[:, 0][0: i], data[:, 3][0: i], color="g")
+    axs[1].plot(data[:, 0][0: i], data[:, 4][0: i], color="g")
 
     camera.snap()
 

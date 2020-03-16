@@ -13,7 +13,7 @@ from world import World
 from simulation import Simulation
 
 from animate import generate_movie
-from variables import space, npeople, time
+from parameters.user_parameters import space, npeople, time
 
 
 def main():
@@ -30,11 +30,12 @@ def main():
     time_range = range(time)
     for i in time_range:
         print(f'Computing time step: {i}')
+        simulation.infect_people()
+
         for person in simulation.population.people:
-            simulation.recover_people(person)
+            simulation.virus_outcome(person)
             simulation.move_person(person, i)
 
-        simulation.infect_people()
 
         simulation.save_data(i)
 
