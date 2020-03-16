@@ -2,7 +2,7 @@ from celluloid import Camera
 import matplotlib.pyplot as plt
 import numpy as np
 
-from parameters.user_parameters import space
+from parameters.user_parameters import space_x, space_y
 
 
 def animate(i, axs, camera):
@@ -10,15 +10,17 @@ def animate(i, axs, camera):
 
     axs[0].scatter(data[:, 0], data[:, 1], c=data[:, 2])
 
-    axs[0].set_xlim(0, space)
-    axs[0].set_ylim(0, space)
+    axs[0].set_xlim(0, space_x)
+    axs[0].set_ylim(0, space_y)
 
     data = np.genfromtxt('worlds/status'.format(i))
 
     axs[1].plot(data[:, 0][0: i], data[:, 1][0: i], color="b")
     axs[1].plot(data[:, 0][0: i], data[:, 2][0: i], color="y")
     axs[1].plot(data[:, 0][0: i], data[:, 3][0: i], color="g")
-    axs[1].plot(data[:, 0][0: i], data[:, 4][0: i], color="g")
+    axs[1].plot(data[:, 0][0: i], data[:, 4][0: i], color="c")
+
+    axs[1].legend(['Healthy', 'Infected', 'Cured', 'Dead'])
 
     camera.snap()
 

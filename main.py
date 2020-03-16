@@ -8,17 +8,17 @@
 
 """Main running script."""
 
-from people import People
-from world import World
-from simulation import Simulation
+from scripts.people import People
+from scripts.world import World
+from scripts.simulation import Simulation
 
-from animate import generate_movie
-from parameters.user_parameters import space, npeople, time
+from scripts.animate import generate_movie
+from parameters.user_parameters import space_x, space_y, npeople, time
 
 
 def main():
 
-    world = World(space)
+    world = World(space_x, space_y)
 
     population = People(npeople)
     population.initialize_population()
@@ -35,7 +35,6 @@ def main():
         for person in simulation.population.people:
             simulation.virus_outcome(person)
             simulation.move_person(person, i)
-
 
         simulation.save_data(i)
 

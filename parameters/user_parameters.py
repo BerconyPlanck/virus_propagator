@@ -1,9 +1,11 @@
 # features
 FEATURES = {'consider_age': True}
 
-space = 50
-npeople = 1000
+space_x = 150
+space_y = 50
+
+npeople = 3000
 ninfected = 1
 
-time = 200
+time = 300
 displacement = 3

@@ -1,6 +1,6 @@
 import numpy as np
 
-from parameters.user_parameters import displacement, space, FEATURES
+from parameters.user_parameters import displacement, FEATURES
 from parameters.virus_parameters import min_recovery_time, max_recovery_time, data_age, incubation_time,  \
     p_get_cured, p_get_infected, p_dies
 from utils.binomial_expansion import find_incremental_probability
@@ -22,9 +22,12 @@ class Person:
         self.personal_incubation_time = np.random.randint(low=incubation_time[0], high=incubation_time[1]+1)
         self.personal_recovery_time = np.random.randint(low=min_recovery_time, high=max_recovery_time+1)
 
-    def set_position(self, space):
-        self.x = np.random.randint(space)
-        self.y = np.random.randint(space)
+    def set_position(self, space_x, space_y):
+        self.space_x = space_x
+        self.space_y = space_y
+
+        self.x = np.random.randint(space_x)
+        self.y = np.random.randint(space_y)
 
     def get_position(self):
         return self.x, self.y
@@ -44,11 +47,11 @@ class Person:
             self.x += dx
             self.y += dy
 
-            if self.x >= space or self.x < 0:
-                self.x = space - np.abs(self.x)
+            if self.x >= self.space_x or self.x < 0:
+                self.x = self.space_x - np.abs(self.x)
 
-            if self.y >= space or self.y < 0:
-                self.y = space - np.abs(self.y)
+            if self.y >= self.space_y or self.y < 0:
+                self.y = self.space_y - np.abs(self.y)
 
             self.time = i
 

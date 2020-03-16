@@ -20,10 +20,9 @@ class Simulation:
 
     def _place_population_in_the_physical_world(self):
         for person in self.population.people:
-            person.set_position(self.physical_world.space)
+            person.set_position(self.physical_world.space_x, self.physical_world.space_y)
 
     def move_person(self, person, i):
-
         if person in self.physical_world.physical_world[person.get_position()[0]][person.get_position()[1]]:
             self.physical_world.physical_world[person.get_position()[0]][person.get_position()[1]].remove(person)
 
