@@ -3,6 +3,7 @@ import numpy as np
 from parameters.user_parameters import displacement, space, FEATURES
 from parameters.virus_parameters import min_recovery_time, max_recovery_time, data_age, incubation_time,  \
     p_get_cured, p_get_infected, p_dies
+from utils.binomial_expansion import find_incremental_probability
 
 
 class Person:
@@ -35,19 +36,21 @@ class Person:
         #     self.infected_time += 1
 
     def motion(self, i):
-        dx, dy = int((np.random.randint(displacement+1))-(displacement/2)), \
-                 int((np.random.randint(displacement+1))-(displacement/2))
 
-        self.x += dx
-        self.y += dy
+        if not self.dead:
+            dx, dy = int((np.random.randint(displacement+1))-(displacement/2)), \
+                     int((np.random.randint(displacement+1))-(displacement/2))
 
-        if self.x >= space or self.x < 0:
-            self.x = space - np.abs(self.x)
+            self.x += dx
+            self.y += dy
 
-        if self.y >= space or self.y < 0:
-            self.y = space - np.abs(self.y)
+            if self.x >= space or self.x < 0:
+                self.x = space - np.abs(self.x)
 
-        self.time = i
+            if self.y >= space or self.y < 0:
+                self.y = space - np.abs(self.y)
+
+            self.time = i
 
     def is_healthy(self):
         return bool(self.healthy)
@@ -118,6 +121,7 @@ class Person:
         for key in data_age.keys():
             if int(key[0:2]) <= age <= int(key[-2:]):
                 age_risk = float(data_age[key][:-1])/100
+        age_risk = find_incremental_probability(age_risk)
         return age_risk
 
 

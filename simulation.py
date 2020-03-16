@@ -23,6 +23,7 @@ class Simulation:
             person.set_position(self.physical_world.space)
 
     def move_person(self, person, i):
+
         if person in self.physical_world.physical_world[person.get_position()[0]][person.get_position()[1]]:
             self.physical_world.physical_world[person.get_position()[0]][person.get_position()[1]].remove(person)
 
