@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of the virus propagator simulation.
+# Copyright (C) 2020 Daniel Prelipcean.
+#
+# This is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Animmation"""
+
 from celluloid import Camera
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,17 +32,22 @@ def animate(i, axs, camera):
 
     axs[1].legend(['Healthy', 'Infected', 'Cured', 'Dead'])
 
+    axs[2].plot(data[:, 0][0: i], data[:, 5][0: i], color="b")
+    axs[2].plot(data[:, 0][0: i], data[:, 6][0: i], color="y")
+    axs[2].legend(['Female', 'Male'])
+
     camera.snap()
 
 
 def generate_movie(filename, nworlds):
 
-    fig, axs = plt.subplots(2)
+    fig, axs = plt.subplots(3)
 
     camera = Camera(fig)
 
     for i in range(nworlds):
-        animate(i, axs, camera)
+        if i % 4 == 0:
+            animate(i, axs, camera)
 
-    animation = camera.animate()
+    animation = camera.animate(interval=20)
     animation.save(f'{filename}.gif', writer='imagemagick')

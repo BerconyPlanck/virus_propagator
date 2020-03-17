@@ -8,7 +8,7 @@
 
 """Main running script."""
 
-from scripts.people import People
+from scripts.population import Population
 from scripts.world import World
 from scripts.simulation import Simulation
 
@@ -20,7 +20,7 @@ def main():
 
     world = World(space_x, space_y)
 
-    population = People(npeople)
+    population = Population(npeople)
     population.initialize_population()
 
     simulation = Simulation(population, world)
@@ -33,7 +33,7 @@ def main():
         simulation.infect_people()
 
         for person in simulation.population.people:
-            simulation.virus_outcome(person)
+            person.virus_outcome()
             simulation.move_person(person, i)
 
         simulation.save_data(i)

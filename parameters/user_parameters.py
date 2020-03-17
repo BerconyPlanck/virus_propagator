@@ -1,11 +1,10 @@
-# features
-FEATURES = {'consider_age': True}
+FEATURES = {'consider_age': True, 'consider_gender': True}
 
-space_x = 150
-space_y = 50
+space_x = 300
+space_y = 100
 
-npeople = 3000
+npeople = 10000
 ninfected = 1
 
-time = 300
+time = 1000
 displacement = 3

@@ -1,4 +1,4 @@
-from utils.utils import data_age
+from utils.utils import data_age, data_gender
 
 incubation_time = [5, 14]
 disease_time = [10, 14]
@@ -9,7 +9,7 @@ max_recovery_time = incubation_time[1] + disease_time[1]
 lifetime = 50
 
 
-p_get_infected = .95
-p_get_cured = .05
+p_get_infected = .99
+p_get_cured = .005
 p_dies = 0.1
 
