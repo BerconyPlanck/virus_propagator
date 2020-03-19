@@ -8,11 +8,11 @@
 
 """Main running script."""
 
-from scripts.population import Population
-from scripts.world import World
-from scripts.simulation import Simulation
+from scripts.analysis.population import Population
+from scripts.analysis.world import World
+from scripts.analysis.simulation import Simulation
 
-from scripts.animate import generate_movie
+from scripts.plotting.animate import generate_movies
 from parameters.user_parameters import space_x, space_y, npeople, time
 
 
@@ -39,7 +39,7 @@ def main():
         simulation.save_data(i)
 
     print('Generating movie. This takes quite some time.')
-    generate_movie('Movie', time)
+    generate_movies('results/graphs/drafts/Movie', time)
 
 
 if __name__ == '__main__':
