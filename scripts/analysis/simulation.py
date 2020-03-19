@@ -1,12 +1,23 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of the virus propagator simulation.
+# Copyright (C) 2020 Daniel Prelipcean.
+#
+# This is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+"""Simulation class."""
+
 import numpy as np
 import os
 
 
 class Simulation:
 
-    def __init__(self, population, physical_world, data_path):
+    def __init__(self, population, physical_world, healthcare_system, data_path):
         self.population = population
         self.physical_world = physical_world
+        self.healthcare_system = healthcare_system
 
         self.healthy = list()
         self.infected = list()
@@ -22,6 +33,8 @@ class Simulation:
 
         self.filename_world = None
         self.filename_status = None
+
+        self._create_world_directory()
 
     def _place_population_in_the_physical_world(self):
         for person in self.population.people:
@@ -66,7 +79,7 @@ class Simulation:
         self.count_cases()
         self.write_status()
 
-    def create_world_directory(self, filename_world='/world{0:04d}', filename_status='/status'):
+    def _create_world_directory(self, filename_world='/world{0:04d}', filename_status='/status'):
         self.filename_world = self.data_path + filename_world
         self.filename_status = self.data_path + filename_status
 
@@ -126,3 +139,15 @@ class Simulation:
         self.deaths_male.append(number_of_dead_male)
 
         print(f'{number_of_people_healthy} {number_of_people_infected} {number_of_people_cured} {number_of_people_dead}')
+
+    def compute_iteration_step(self, i):
+        print(f'Computing time step: {i}')
+        self.infect_people()
+
+        for person in self.population.people:
+            self.healthcare_system.treat_person(person)
+            person.virus_outcome()
+            self.move_person(person, i)
+
+        self.healthcare_system.is_capacity_reached()
+        self.save_data(i)

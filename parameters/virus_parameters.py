@@ -10,6 +10,6 @@ lifetime = 50
 
 
 p_get_infected = .99
-p_get_cured = .005
+p_get_recovered = .005
 p_dies = 0.1
 

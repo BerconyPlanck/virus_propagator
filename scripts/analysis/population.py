@@ -11,9 +11,10 @@
 
 import numpy as np
 
-from parameters.user_parameters import displacement, FEATURES
+from parameters.user_parameters import displacement, FEATURES, improvement_factor_hospitalized_recovery, \
+    improvement_factor_hospitalized_death
 from parameters.virus_parameters import min_recovery_time, max_recovery_time, data_age, incubation_time,  \
-    p_get_cured, p_get_infected, p_dies, data_gender
+    p_get_recovered, p_get_infected, p_dies, data_gender
 
 from utils.binomial_expansion import find_incremental_probability
 
@@ -30,8 +31,10 @@ class Person:
 
         self.healthy = 1
         self.infected = 0
-        self.cured = 0
+        self.recovered = 0
         self.dead = 0
+
+        self.hospitalized = 0
 
         self.time = 0
         self.contact_time = None
@@ -113,7 +116,7 @@ class Person:
         -------
         out: bool
         """
-        return bool(self.cured)
+        return bool(self.recovered)
 
     def is_dead(self):
         """Return the death status of this person.
@@ -130,7 +133,7 @@ class Person:
             if np.random.random() < p_get_infected:
                 self.healthy = 0
                 self.infected = 1
-                self.cured = 0
+                self.recovered = 0
                 self.dead = 0
 
                 self.contact_time = self.time
@@ -145,29 +148,55 @@ class Person:
             if time_infected > self.personal_recovery_time:
                 self.get_recovered()
 
+    def get_recovered_probability(self):
+        p_individidual_recovers = p_get_recovered
+        if self.hospitalized:
+            p_individidual_recovers *= improvement_factor_hospitalized_recovery
+        return p_individidual_recovers
+
     def get_recovered(self):
         """Recover this person."""
-        if np.random.random() < p_get_cured:
+        p_individidual_recovers = self.get_recovered_probability()
+
+        if np.random.random() < p_individidual_recovers:
             self.healthy = 0
             self.infected = 0
-            self.cured = 1
+            self.recovered = 1
             self.dead = 1
+
+    def is_hospitalized(self):
+        return self.hospitalized
+
+    def get_hospitalized(self):
+        self.hospitalized = 1
+
+    def get_out_of_hospital(self):
+        self.hospitalized = 0
 
     def die(self):
         """Set this person status to dead."""
         self.healthy = 0
         self.infected = 0
-        self.cured = 0
+        self.recovered = 0
         self.dead = 1
 
-    def get_death(self):
-        """Inflict death upon this person."""
+    def compute_death_probability(self):
         p_individidual_dies = p_dies
         if self.age:
             p_individidual_dies = self.risk_age
         if self.gender:
             p_individidual_dies += self.risk_gender
             p_individidual_dies /= 2
+
+        if self.hospitalized:
+            p_individidual_dies /= improvement_factor_hospitalized_death
+
+        return p_individidual_dies
+
+    def get_death(self):
+        """Inflict death upon this person."""
+
+        p_individidual_dies = self.compute_death_probability()
 
         if np.random.random() < p_individidual_dies:
             self.die()
@@ -181,7 +210,7 @@ class Person:
         """
         if self.infected == 1:
             status = 1
-        elif self.cured == 1:
+        elif self.recovered == 1:
             status = 2
         elif self.dead == 1:
             status = 3

@@ -6,12 +6,17 @@ space_y = 100
 npeople = 10000
 ninfected = 1
 
-time = 500
+healthcare_system_capacity = 0
+
+improvement_factor_hospitalized_recovery = 1
+improvement_factor_hospitalized_death = 1
+
+time = 1000
 displacement = 3
 
-analysises = {'virus_outbreak': False,
+analysises = {'virus_outbreak': True,
               'dead_age_distribution': True,
-              'population_status': False,
-              'dead_people_female_male': False}
+              'population_status': True,
+              'dead_people_female_male': True}
 
 data_path = 'results/data/worlds'

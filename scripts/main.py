@@ -11,9 +11,10 @@
 from scripts.analysis.population import Population
 from scripts.analysis.world import World
 from scripts.analysis.simulation import Simulation
+from scripts.analysis.healthcare_system import HealthcareSystem
 
 from scripts.plotting.animate import generate_movies
-from parameters.user_parameters import space_x, space_y, npeople, time, data_path
+from parameters.user_parameters import space_x, space_y, npeople, time, data_path, healthcare_system_capacity
 
 
 def main():
@@ -23,20 +24,13 @@ def main():
     population = Population(npeople)
     population.initialize_population()
 
-    simulation = Simulation(population, world, data_path)
+    healthcare_system = HealthcareSystem(healthcare_system_capacity)
 
-    simulation.create_world_directory()
+    simulation = Simulation(population, world, healthcare_system, data_path)
 
     time_range = range(time)
     for i in time_range:
-        print(f'Computing time step: {i}')
-        simulation.infect_people()
-
-        for person in simulation.population.people:
-            person.virus_outcome()
-            simulation.move_person(person, i)
-
-        simulation.save_data(i)
+        simulation.compute_iteration_step(i)
 
     print('Generating movie. This takes quite some time.')
     generate_movies('results/graphs/drafts/movie', time)

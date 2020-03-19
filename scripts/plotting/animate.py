@@ -6,7 +6,7 @@
 # This is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Animmation and plotting scripts."""
+"""Animation and plotting scripts."""
 
 from celluloid import Camera
 import matplotlib.pyplot as plt
@@ -102,7 +102,7 @@ def animate_population_status(i, camera):
 
     data_sets = [data_healthy, data_infected, data_recovered, data_dead]
 
-    legend = ['Healthy', 'Infected', 'Cured', 'Dead']
+    legend = ['Healthy/Uninfected', 'Infected', 'Recovered', 'Dead']
     labels = {'xlabel': 'Time [a.u.]', 'ylabel': 'People'}
 
     plotter.plot_data_sets(i, data_time, data_sets, legend, labels)
@@ -143,3 +143,5 @@ def generate_movies(filename, nworlds):
         animation = camera.animate(interval=20)
         animation.save(f'{filename}_{key}.gif', writer='imagemagick')
         fig.clf()
+
+        print(f'Generated movie for {key}')
