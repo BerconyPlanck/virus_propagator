@@ -198,6 +198,15 @@ class Person:
         """
         return self.gender
 
+    def get_age(self):
+        """Return the age of this person.
+
+        Returns
+        -------
+        out: int
+        """
+        return self.age
+
     @staticmethod
     def find_risk_age(age):
         """Find the risk of this person dying based on their age.

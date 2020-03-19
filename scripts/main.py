@@ -13,7 +13,7 @@ from scripts.analysis.world import World
 from scripts.analysis.simulation import Simulation
 
 from scripts.plotting.animate import generate_movies
-from parameters.user_parameters import space_x, space_y, npeople, time
+from parameters.user_parameters import space_x, space_y, npeople, time, data_path
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     population = Population(npeople)
     population.initialize_population()
 
-    simulation = Simulation(population, world)
+    simulation = Simulation(population, world, data_path)
 
     simulation.create_world_directory()
 
@@ -39,7 +39,7 @@ def main():
         simulation.save_data(i)
 
     print('Generating movie. This takes quite some time.')
-    generate_movies('results/graphs/drafts/Movie', time)
+    generate_movies('results/graphs/drafts/movie', time)
 
 
 if __name__ == '__main__':

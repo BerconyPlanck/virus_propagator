@@ -4,7 +4,7 @@ import os
 
 class Simulation:
 
-    def __init__(self, population, physical_world):
+    def __init__(self, population, physical_world, data_path):
         self.population = population
         self.physical_world = physical_world
 
@@ -15,6 +15,8 @@ class Simulation:
 
         self.deaths_female = list()
         self.deaths_male = list()
+
+        self.data_path = data_path
 
         self._place_population_in_the_physical_world()
 
@@ -52,7 +54,6 @@ class Simulation:
                             for person in position:
                                 person.get_infected()
 
-
     def save_data(self, i):
         """
 
@@ -65,13 +66,13 @@ class Simulation:
         self.count_cases()
         self.write_status()
 
-    def create_world_directory(self, filename_world='worlds/world{0:04d}', filename_status='worlds/status'):
-        self.filename_world = filename_world
-        self.filename_status = filename_status
+    def create_world_directory(self, filename_world='/world{0:04d}', filename_status='/status'):
+        self.filename_world = self.data_path + filename_world
+        self.filename_status = self.data_path + filename_status
 
         # Create worlds directory if it doesn't exist
-        if not os.path.isdir('worlds'):
-            os.mkdir('worlds')
+        if not os.path.isdir(self.data_path):
+            os.mkdir(self.data_path)
 
     def write_populated_world(self, i):
         """
@@ -82,7 +83,11 @@ class Simulation:
         with open(self.filename_world.format(i), 'w') as output:
             for person in self.population.people:
                 x, y = person.get_position()
-                output.write(f'{x}\t{y}\t{person.get_status()}\n')
+                status = person.get_status()
+                gender = person.get_gender()
+                age = person.get_age()
+
+                output.write(f'{x}\t{y}\t{status}\t{gender}\t{age}\n')
 
     def write_status(self):
         with open(self.filename_status, 'w') as output:
